@@ -18,9 +18,6 @@ func RunServer() {
 }
 
 func main() {
-	//go func() {
-	//	log.Fatal(http.ListenAndServe("0.0.0.0:8888", nil))
-	//}()
 	cpuf, err := os.Create("cpu_profile")
 	if err != nil {
 		log.Fatal(err)
@@ -36,6 +33,5 @@ func main() {
 	//	log.Fatal("could not write memory profile: ", err)
 	//}
 	//defer  memf.Close()
-
 	RunServer()
 }

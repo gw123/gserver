@@ -33,14 +33,11 @@ func main() {
 	glog.Info("client runing....")
 	workerNum := flag.Int("worker_num", 1, "工作协程数量")
 	isLoop := flag.String("loop", "false", "是否循环请求")
-	//sleepTime := flag.Int("sleep", 1, "请求等待时间 单位是1s 默认是1s")
 	flag.Parse()
 
 	clientConfig := config.LoadClientConfig()
 	signer := packdata.NewSignerHashSha1([]byte(clientConfig.Key))
 	packer := packdata.NewDataPackV1(signer)
-
-
 
 	if *isLoop == "true" {
 		glog.Debug("循环发送消息,workerNum : %d", *workerNum)
