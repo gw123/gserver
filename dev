@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+srcDir=${GOPATH}"/src/github.com/gw123/gserver"
+dstDir=${GOPATH}"/bin/gserver"
+
+if [ ! -d "${dstDir}" ]; then
+    mkdir -p ${dstDir}
+fi
+
+term() {
+    echo "term"
+    ps -aux|grep pos-tcpserver|grep -v grep|awk '{print $2}'|xargs kill -TERM
+}
+
+server() {
+    buildStr="go build -o  ${dstDir}/server  ${srcDir}/server.go"
+    echo $buildStr
+    $buildStr
+    if [ $? -eq 0 ]; then
+        cd $dstDir && ./server
+    else
+       echo "编译失败"
+    fi
+}
+
+client() {
+    buildStr="go build -o  ${dstDir}/client  ${srcDir}/client.go"
+    echo $buildStr
+    $buildStr
+    if [ $? -eq 0 ]; then
+        cd $dstDir && ./client
+    else
+       echo "编译失败"
+    fi
+}
+
+case $1 in
+ "term")
+ term
+  ;;
+  "server")
+  server
+  ;;
+
+  "client")
+  client
+  ;;
+  default)
+   echo "  server, client"
+  ;;
+esac
