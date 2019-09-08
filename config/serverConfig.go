@@ -8,7 +8,8 @@ import (
 func LoadServerConfig() contracts.ServerConfig {
 	myConfig := viper.New()
 	viper.AutomaticEnv()
-	myConfig.SetConfigFile("config.server.yaml")
+	//myConfig.SetConfigFile("config.server.yaml")
+	myConfig.SetConfigFile("/etc/gserver/config.server.yaml")
 	if err := myConfig.ReadInConfig(); err != nil {
 		panic(err)
 	}

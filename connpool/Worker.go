@@ -79,7 +79,7 @@ func (w *Worker) Run() {
 			job.Run()
 			w.pool.RecycleWorker(w)
 		default:
-			time.Sleep(time.Millisecond * 1)
+			time.Sleep(time.Second)
 			//glog.Debug("没有任务 sleep")
 		}
 	}

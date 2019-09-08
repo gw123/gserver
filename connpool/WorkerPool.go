@@ -2,7 +2,7 @@ package connpool
 
 import (
 	"context"
-	"github.com/fatedier/frp/utils/log"
+	"github.com/gw123/glog"
 	"github.com/gw123/gserver/contracts"
 	"sync"
 	"time"
@@ -85,7 +85,7 @@ func (pool *WorkerPool) Run() {
 
 func (pool *WorkerPool) Stop() {
 	pool.cancelFunc()
-	log.Debug("wait all worker stop")
+	glog.Debug("wait all worker stop")
 	for _, worker := range pool.Workers {
 		worker.Stop()
 	}

@@ -20,6 +20,7 @@ config.inner.yaml
 test/
 main
 server
+client
 debug/
 client/
 dist/

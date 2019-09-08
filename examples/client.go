@@ -37,10 +37,9 @@ func main() {
 	flag.Parse()
 
 	clientConfig := config.LoadClientConfig()
+	glog.Dump(clientConfig)
 	signer := packdata.NewSignerHashSha1([]byte(clientConfig.Key))
 	packer := packdata.NewDataPackV1(signer)
-
-
 
 	if *isLoop == "true" {
 		glog.Debug("循环发送消息,workerNum : %d", *workerNum)

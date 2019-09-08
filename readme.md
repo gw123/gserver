@@ -5,6 +5,9 @@
 - 实现拆包和解包和包内容安全校验 ,支持hash_mac_sha1,hash_mac_sha256,hash_mac_sha512签名验证
 - 采用worker do jobs 模式 ,方便扩展对conn 不同的处理方式 
 - 实现worker 负载监控,当worker 消耗超过 指定值触发警告(可以配置向一个接口发一个请求, 发邮件) todo
+- todo 监控每个job 运行时长
+- todo 将日志和监控发送到elk中
+- todo 使用etcd 动态更新配置
 
 # Server 配置 config.server.yaml
 ```
@@ -140,3 +143,5 @@ func main() {
 }
 ```
 ## go run entry/client.go 
+
+## 其他可以参考 examples
