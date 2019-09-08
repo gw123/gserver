@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 dockerImage=golang:1.12.9-alpine3.10
 srcDist=entry/server.go
-dstExe=release/server.upload
-
+export dstExe=release/alpine/server.upload
 runStr="docker run -it  --rm -v $GOPATH:/go \
 -v $HOME/.ssh:/root/.ssh \
 -v $PWD:/usr/src/myapp \
