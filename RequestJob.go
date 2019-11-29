@@ -35,27 +35,27 @@ func NewRequestJob(conn net.Conn, timeout time.Duration, ctx context.Context) *R
 	return requestJob
 }
 
-func (job *RequestJob) Run() (interface{}, error) {
+func (job *RequestJob) Run() error {
 	if job.conn == nil {
-		return nil, errors.New("conn is nil")
+		return errors.New("conn is nil")
 	}
 	defer job.conn.Close()
 	signer := packdata.NewSignerHashSha1([]byte("123456"))
 	packer := packdata.NewDataPackV1(signer)
 	msg, err := packer.UnPackFromConn(job.conn)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	msg = contracts.NewMsg(1, []byte("server"))
 	buf, err := packer.Pack(msg)
 	if err != nil {
 		fmt.Println("net.Dial 连接错误: ", err)
-		return nil, err
+		return err
 	}
 	sleep := rand.Int31n(6)
 	time.Sleep(time.Duration(sleep) * time.Second)
 	job.conn.Write(buf)
-	return nil, err
+	return err
 }
 
 func (job *RequestJob) Stop() {

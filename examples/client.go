@@ -3,10 +3,8 @@ package main
 import (
 	"flag"
 	"github.com/gw123/glog"
-	"github.com/gw123/gserver/client"
-	"github.com/gw123/gserver/config"
+	"github.com/gw123/gserver"
 	"github.com/gw123/gserver/contracts"
-	"github.com/gw123/gserver/packdata"
 	"os"
 	"os/signal"
 	"sync"
@@ -36,10 +34,9 @@ func main() {
 	//sleepTime := flag.Int("sleep", 1, "请求等待时间 单位是1s 默认是1s")
 	flag.Parse()
 
-	clientConfig := config.LoadClientConfig()
+	clientConfig := gserver.LoadClientConfig()
 	glog.Dump(clientConfig)
-	signer := packdata.NewSignerHashSha1([]byte(clientConfig.Key))
-	packer := packdata.NewDataPackV1(signer)
+	packer := gserver.NewDataPack()
 
 	if *isLoop == "true" {
 		glog.Debug("循环发送消息,workerNum : %d", *workerNum)
@@ -49,7 +46,7 @@ func main() {
 			go func() {
 				defer waitGroup.Done()
 				for ; !gIsClose; {
-					client := client.NewClient(clientConfig.ServerAddr, clientConfig.Timeout, packer)
+					client := gserver.NewClient(clientConfig.ServerAddr, clientConfig.Timeout, packer)
 					err := client.Connect()
 					if err != nil {
 						glog.Error(err.Error())
@@ -74,7 +71,7 @@ func main() {
 		}
 		waitGroup.Wait()
 	} else {
-		client := client.NewClient(clientConfig.ServerAddr, clientConfig.Timeout, packer)
+		client := gserver.NewClient(clientConfig.ServerAddr, clientConfig.Timeout, packer)
 		err := client.Connect()
 		if err != nil {
 			glog.Error(err.Error())
