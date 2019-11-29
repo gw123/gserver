@@ -42,6 +42,7 @@ replace gopkg.in/jcmturner/gokrb5.v7 => github.com/jcmturner/gokrb5 v7.2.4-0.201
 
 require (
 	github.com/gw123/glog v0.0.0-20190903123404-474813a701bd
+	github.com/gw123/gworker v0.0.0-20191010080649-388deb8bc008
 	github.com/pkg/errors v0.8.1
 	github.com/spf13/viper v1.4.0
 	github.com/stretchr/testify v1.3.0 // indirect

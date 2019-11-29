@@ -1,4 +1,4 @@
-package packdata
+package gserver
 
 import (
 	"bytes"

@@ -1,13 +1,13 @@
 #基于tcp协议的服务和客户端  
-- 使用tlv协议头只需要4或者8字节
-- 实现协程池避免协程创建和释放的开销,可以稳定支持几w的并非连接
+- 使用tlv协议头只需要8字节
+- 实现协程池避免协程创建和释放的开销,可以稳定支持几w的并发连接
 - 实现平滑关闭在接受到关闭信号后等待所有的woker都执行完毕后才会关闭
-- 实现拆包和解包和包内容安全校验 ,支持hash_mac_sha1,hash_mac_sha256,hash_mac_sha512签名验证
-- 采用worker do jobs 模式 ,方便扩展对conn 不同的处理方式 
-- 实现worker 负载监控,当worker 消耗超过 指定值触发警告(可以配置向一个接口发一个请求, 发邮件) todo
-- todo 监控每个job 运行时长
-- todo 将日志和监控发送到elk中
-- todo 使用etcd 动态更新配置
+- 采用worker do jobs 模式 ,方便扩展对conn不同的处理方式 
+
+
+## 在实际使用过程中发现有些客户端实现存在一些问题 dataLen 传过来是一个错误的值 ,这就导致了服务端要创建的buffer过大
+出现out of memery错误导致服务异常关闭, 所以为了避免这个问题, 这里限制了每个数据包的长度不大于1M ,超过1M的数据包将会被丢弃
+并且返回: "报文长度异常的错误"
 
 # Server 配置 config.server.yaml
 ```
@@ -25,14 +25,14 @@ package main
 
 import (
 	"github.com/gw123/glog"
-	"github.com/gw123/gserver/config"
-	"github.com/gw123/gserver/server"
+	"github.com/gw123/gserver"
 )
 
 func RunServer() {
-	config := config.LoadServerConfig()
+	//LoadServerConfig 可以自己实现,方便扩展或者融合到其他项目中
+	config := gserver.LoadServerConfig()
 	glog.Dump(config)
-	server := server.NewServer(config)
+	server := gserver.NewServer(config)
 	server.Run()
 	glog.Warn("服务正常关闭")
 }
@@ -40,6 +40,7 @@ func RunServer() {
 func main() {
 	RunServer()
 }
+
 ```
 ## go run  entry/server.go 
 
@@ -56,20 +57,21 @@ crypto_type: "hash_sha1"
 #代码实现
 ```
 package main
+
 import (
 	"flag"
 	"github.com/gw123/glog"
-	"github.com/gw123/gserver/client"
-	"github.com/gw123/gserver/config"
+	"github.com/gw123/gserver"
 	"github.com/gw123/gserver/contracts"
-	"github.com/gw123/gserver/packdata"
 	"os"
 	"os/signal"
 	"sync"
 	"syscall"
 	"time"
 )
+
 var gIsClose = false
+
 func main() {
 	go func() {
 		ch := make(chan os.Signal)
@@ -87,11 +89,12 @@ func main() {
 	glog.Info("client runing....")
 	workerNum := flag.Int("worker_num", 1, "工作协程数量")
 	isLoop := flag.String("loop", "false", "是否循环请求")
+	//sleepTime := flag.Int("sleep", 1, "请求等待时间 单位是1s 默认是1s")
 	flag.Parse()
 
-	clientConfig := config.LoadClientConfig()
-	signer := packdata.NewSignerHashSha1([]byte(clientConfig.Key))
-	packer := packdata.NewDataPackV1(signer)
+	clientConfig := gserver.LoadClientConfig()
+	glog.Dump(clientConfig)
+	packer := gserver.NewDataPack()
 
 	if *isLoop == "true" {
 		glog.Debug("循环发送消息,workerNum : %d", *workerNum)
@@ -101,7 +104,7 @@ func main() {
 			go func() {
 				defer waitGroup.Done()
 				for ; !gIsClose; {
-					client := client.NewClient(clientConfig.ServerAddr, clientConfig.Timeout, packer)
+					client := gserver.NewClient(clientConfig.ServerAddr, clientConfig.Timeout, packer)
 					err := client.Connect()
 					if err != nil {
 						glog.Error(err.Error())
@@ -126,7 +129,7 @@ func main() {
 		}
 		waitGroup.Wait()
 	} else {
-		client := client.NewClient(clientConfig.ServerAddr, clientConfig.Timeout, packer)
+		client := gserver.NewClient(clientConfig.ServerAddr, clientConfig.Timeout, packer)
 		err := client.Connect()
 		if err != nil {
 			glog.Error(err.Error())
@@ -141,6 +144,7 @@ func main() {
 		}
 	}
 }
+
 ```
 ## go run entry/client.go 
 

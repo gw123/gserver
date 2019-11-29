@@ -68,6 +68,8 @@ github.com/grpc-ecosystem/grpc-gateway v1.9.0/go.mod h1:vNeuVxBJEsws4ogUvrchl83t
 github.com/grpc/grpc-go v1.2.1-0.20190730171453-92635fa6bffd/go.mod h1:Y5yQAOtifL1yxbo5wqy6BxZv8vAUGQwXBOALyacEbxg=
 github.com/gw123/glog v0.0.0-20190903123404-474813a701bd h1:9SdO2NyByNnb9nO3sqRN6j+gHyXAHjhcK3tK15+9Nhg=
 github.com/gw123/glog v0.0.0-20190903123404-474813a701bd/go.mod h1:e+EZM5PnWjuzbSbqxfkaw2Woy+mabwr2GVEUDeNlV6U=
+github.com/gw123/gworker v0.0.0-20191010080649-388deb8bc008 h1:nB042tG6ybGN85YWZNpZ1yWgGWfZS7TIc+6SforeH70=
+github.com/gw123/gworker v0.0.0-20191010080649-388deb8bc008/go.mod h1:KY/vVDj4Nno6HMePHdB+oJzyeDTA5t7TEEfcjo8CcR0=
 github.com/hashicorp/golang-lru v0.5.0/go.mod h1:/m3WP610KZHVQ1SGc6re/UDhFvYD7pJ4Ao+sR/qLZy8=
 github.com/hashicorp/golang-lru v0.5.1/go.mod h1:/m3WP610KZHVQ1SGc6re/UDhFvYD7pJ4Ao+sR/qLZy8=
 github.com/hashicorp/hcl v1.0.0 h1:0Anlzjpi4vEasTeNFn2mLJgTSwt0+6sfsiTG8qcWGx4=

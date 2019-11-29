@@ -1,4 +1,4 @@
-package config
+package gserver
 
 import (
 	"github.com/gw123/gserver/contracts"
@@ -8,7 +8,7 @@ import (
 func LoadClientConfig() contracts.ClientConfig {
 	myConfig := viper.New()
 	viper.AutomaticEnv()
-	myConfig.SetConfigFile("/etc/gserver/config.client.yaml")
+	myConfig.SetConfigFile("config.client.yaml")
 	if err := myConfig.ReadInConfig(); err != nil {
 		panic(err)
 	}

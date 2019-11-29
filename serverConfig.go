@@ -1,4 +1,4 @@
-package config
+package gserver
 
 import (
 	"github.com/gw123/gserver/contracts"

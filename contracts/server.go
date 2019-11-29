@@ -8,14 +8,10 @@ type ServerConfig struct {
 	Key        string `json:"key" yaml:"key"`
 }
 
-type PoolStatus struct {
-	WorkerStausMap map[int]int
-	FreeNum        int
-}
 
 type Server interface {
 	Start()
 	Stop()
-	Status() PoolStatus
+	Status() uint
 	GetConfig() ServerConfig
 }

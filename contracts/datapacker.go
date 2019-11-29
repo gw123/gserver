@@ -18,20 +18,10 @@ func NewMsg(msgType uint32, body []byte) *Msg {
 	}
 }
 
-func (msg *Msg) GetMsgSign(signer Signer) ([]byte, error) {
-	return signer.Sign(msg.Body)
-}
-
 func (msg *Msg) GetBody() []byte {
 	return msg.Body
 }
 
-const Sign_HashSha1 = 1
-const Sign_HashSha2 = 2
-
-type Signer interface {
-	Sign([]byte) ([]byte, error)
-}
 
 type DataPacker interface {
 	GetHeadLen() uint32

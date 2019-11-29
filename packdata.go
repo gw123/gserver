@@ -1,4 +1,4 @@
-package packdata
+package gserver
 
 import (
 	"bytes"
@@ -27,7 +27,7 @@ func (dataPack DataPackV1) Pack(msg *contracts.Msg) ([]byte, error) {
 	dataBuff := bytes.NewBuffer([]byte{})
 	var msgType, datalen uint32
 	msgType = msg.MsgId
-	datalen = msg.Length + SignLength
+	datalen = msg.Length
 
 	if err := binary.Write(dataBuff, binary.BigEndian, datalen); err != nil {
 		return nil, err

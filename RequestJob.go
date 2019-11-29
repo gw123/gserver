@@ -1,11 +1,9 @@
-package jobs
+package gserver
 
 import (
 	"context"
 	"fmt"
-	"github.com/gw123/gserver/connpool"
 	"github.com/gw123/gserver/contracts"
-	"github.com/gw123/gserver/packdata"
 	"github.com/pkg/errors"
 	"math/rand"
 	"net"
@@ -15,7 +13,6 @@ import (
 type RequestJob struct {
 	ctx        context.Context
 	timeout    time.Duration
-	Client     contracts.RemoteClient
 	timer      *time.Timer
 	cancelFunc context.CancelFunc
 	stopFlag   bool
@@ -23,11 +20,9 @@ type RequestJob struct {
 }
 
 func NewRequestJob(conn net.Conn, timeout time.Duration, ctx context.Context) *RequestJob {
-	client := connpool.NewClient(ctx, conn)
 	ctx, cancelFunc := context.WithTimeout(ctx, timeout)
 	requestJob := &RequestJob{
 		timeout:    timeout,
-		Client:     client,
 		ctx:        ctx,
 		cancelFunc: cancelFunc,
 		conn:       conn,
@@ -40,8 +35,7 @@ func (job *RequestJob) Run() error {
 		return errors.New("conn is nil")
 	}
 	defer job.conn.Close()
-	signer := packdata.NewSignerHashSha1([]byte("123456"))
-	packer := packdata.NewDataPackV1(signer)
+	packer := NewDataPack()
 	msg, err := packer.UnPackFromConn(job.conn)
 	if err != nil {
 		return err
