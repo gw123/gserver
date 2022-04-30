@@ -35,17 +35,16 @@ func main() {
 	flag.Parse()
 
 	clientConfig := gserver.LoadClientConfig()
-	glog.Dump(clientConfig)
 	packer := gserver.NewDataPack()
 
 	if *isLoop == "true" {
-		glog.Debug("循环发送消息,workerNum : %d", *workerNum)
+		glog.Debugf("循环发送消息,workerNum : %d", *workerNum)
 		waitGroup := sync.WaitGroup{}
 		for i := 0; i < *workerNum; i++ {
 			waitGroup.Add(1)
 			go func() {
 				defer waitGroup.Done()
-				for ; !gIsClose; {
+				for !gIsClose {
 					client := gserver.NewClient(clientConfig.ServerAddr, clientConfig.Timeout, packer)
 					err := client.Connect()
 					if err != nil {
@@ -56,15 +55,15 @@ func main() {
 					msg := contracts.NewMsg(1, []byte("hello world"))
 					err = client.Send(msg)
 					if err != nil {
-						glog.Error("%s", err.Error())
+						glog.Errorf("%s", err.Error())
 						return
 					}
 					msg, err = client.Read()
 					if err != nil {
-						glog.Error("%s", err.Error())
+						glog.Errorf("%s", err.Error())
 						return
 					}
-					glog.Debug("Response:%s", string(msg.Body))
+					glog.Debugf("Response:%s", string(msg.Body))
 					time.Sleep(time.Millisecond)
 				}
 			}()
@@ -77,11 +76,11 @@ func main() {
 			glog.Error(err.Error())
 			return
 		}
-		glog.Debug("发送一条消息,workerNum : %d", *workerNum)
+		glog.Debugf("发送一条消息,workerNum : %d", *workerNum)
 		msg := contracts.NewMsg(1, []byte("hello world"))
 		err = client.Send(msg)
 		if err != nil {
-			glog.Error("%s", err.Error())
+			glog.Errorf("%s", err.Error())
 			return
 		}
 	}

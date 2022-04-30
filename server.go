@@ -5,7 +5,6 @@ import (
 	"github.com/gw123/glog"
 	"github.com/gw123/gserver/contracts"
 	"github.com/gw123/gworker"
-	"log"
 	"net"
 	"os"
 	"os/signal"
@@ -27,9 +26,7 @@ type Server struct {
 
 func NewServer(config contracts.ServerConfig) *Server {
 	ctx := context.Background()
-	workerPool := gworker.NewWorkerPool(ctx, time.Second*2, 100, func(err error, job gworker.Job) {
-		log.Print(err)
-	})
+	workerPool := gworker.NewWorkerPool(ctx, time.Second*2, 100)
 	return &Server{
 		config: config,
 		pool:   workerPool,
@@ -41,10 +38,10 @@ func (s *Server) server() {
 	addr := s.config.BindAddr
 	listen, err := net.Listen("tcp", addr)
 	if err != nil {
-		glog.Error("%s", err.Error())
+		glog.Errorf("%s", err.Error())
 		return
 	}
-	glog.Info("server listen at %s", addr)
+	glog.Infof("server listen at %s", addr)
 	defer listen.Close()
 	go func() {
 		for {
@@ -77,12 +74,12 @@ func (s *Server) server() {
 		}
 		select {
 		case <-timer.C:
-			glog.Info("5s内一共收到%d个请求", s.count)
+			glog.Infof("5s内一共收到%d个请求", s.count)
 			s.countMutex.Lock()
 			s.count = 0
 			s.countMutex.Unlock()
 			status := s.Status()
-			glog.Info("freeNum : %d", status)
+			glog.Infof("freeNum : %d", status)
 		}
 	}
 }

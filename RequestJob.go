@@ -30,7 +30,7 @@ func NewRequestJob(conn net.Conn, timeout time.Duration, ctx context.Context) *R
 	return requestJob
 }
 
-func (job *RequestJob) Run() error {
+func (job *RequestJob) Run(ctx context.Context) error {
 	if job.conn == nil {
 		return errors.New("conn is nil")
 	}
@@ -50,13 +50,4 @@ func (job *RequestJob) Run() error {
 	time.Sleep(time.Duration(sleep) * time.Second)
 	job.conn.Write(buf)
 	return err
-}
-
-func (job *RequestJob) Stop() {
-	job.cancelFunc()
-	return
-}
-
-func (job *RequestJob) GetJobType() string {
-	return "requestJob"
 }
