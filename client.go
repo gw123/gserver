@@ -3,7 +3,6 @@ package gserver
 import (
 	"github.com/gw123/gserver/contracts"
 	"net"
-	"time"
 )
 
 type Client struct {
@@ -26,7 +25,7 @@ func (client *Client) Connect() error {
 	if err != nil {
 		return err
 	}
-	conn.SetDeadline(time.Now().Add(time.Second * time.Duration(client.timeout)))
+	// conn.SetDeadline(time.Now().Add(time.Second * time.Duration(client.timeout)))
 	client.conn = conn
 	return nil
 }

@@ -10,7 +10,7 @@ import (
 
 const HeaderLen = 4
 const SignLength = 20
-const MaxLen = 1024000
+const MaxLen = 1024 * 1024
 
 type DataPackV1 struct {
 }

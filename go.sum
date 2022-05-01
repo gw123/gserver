@@ -126,6 +126,10 @@ github.com/gw123/gworker v0.0.0-20191010080649-388deb8bc008 h1:nB042tG6ybGN85YWZ
 github.com/gw123/gworker v0.0.0-20191010080649-388deb8bc008/go.mod h1:KY/vVDj4Nno6HMePHdB+oJzyeDTA5t7TEEfcjo8CcR0=
 github.com/gw123/gworker v1.7.4 h1:jlcZf6nKtTxsbZxtEpNAmDo/d8sBRrdMm2yQ0eZ0lOg=
 github.com/gw123/gworker v1.7.4/go.mod h1:QL9ggR/vhN3XFqiJFw5YjBPPS/VOy1xi1KL4k77ChFA=
+github.com/gw123/gworker v1.7.5 h1:sVPN6Szpp+K5wlY/jLYXeB4SAuzwKhmJiHg0YuJKorA=
+github.com/gw123/gworker v1.7.5/go.mod h1:QL9ggR/vhN3XFqiJFw5YjBPPS/VOy1xi1KL4k77ChFA=
+github.com/gw123/gworker v1.7.6 h1:2MwhfoLY1rgU1BLxZDhQth3+eT4GTSG41n8WQutx6dc=
+github.com/gw123/gworker v1.7.6/go.mod h1:QL9ggR/vhN3XFqiJFw5YjBPPS/VOy1xi1KL4k77ChFA=
 github.com/hashicorp/golang-lru v0.5.0/go.mod h1:/m3WP610KZHVQ1SGc6re/UDhFvYD7pJ4Ao+sR/qLZy8=
 github.com/hashicorp/golang-lru v0.5.1/go.mod h1:/m3WP610KZHVQ1SGc6re/UDhFvYD7pJ4Ao+sR/qLZy8=
 github.com/hashicorp/hcl v1.0.0 h1:0Anlzjpi4vEasTeNFn2mLJgTSwt0+6sfsiTG8qcWGx4=

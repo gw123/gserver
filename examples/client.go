@@ -44,14 +44,13 @@ func main() {
 			waitGroup.Add(1)
 			go func() {
 				defer waitGroup.Done()
+				client := gserver.NewClient(clientConfig.ServerAddr, clientConfig.Timeout, packer)
+				err := client.Connect()
+				if err != nil {
+					glog.Error(err.Error())
+					return
+				}
 				for !gIsClose {
-					client := gserver.NewClient(clientConfig.ServerAddr, clientConfig.Timeout, packer)
-					err := client.Connect()
-					if err != nil {
-						glog.Error(err.Error())
-						return
-					}
-
 					msg := contracts.NewMsg(1, []byte("hello world"))
 					err = client.Send(msg)
 					if err != nil {

@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-type RequestJob struct {
+type ShortConnJob struct {
 	ctx        context.Context
 	timeout    time.Duration
 	timer      *time.Timer
@@ -19,9 +19,9 @@ type RequestJob struct {
 	conn       net.Conn
 }
 
-func NewRequestJob(conn net.Conn, timeout time.Duration, ctx context.Context) *RequestJob {
+func NewShortConnJob(conn net.Conn, timeout time.Duration, ctx context.Context) *ShortConnJob {
 	ctx, cancelFunc := context.WithTimeout(ctx, timeout)
-	requestJob := &RequestJob{
+	requestJob := &ShortConnJob{
 		timeout:    timeout,
 		ctx:        ctx,
 		cancelFunc: cancelFunc,
@@ -30,7 +30,7 @@ func NewRequestJob(conn net.Conn, timeout time.Duration, ctx context.Context) *R
 	return requestJob
 }
 
-func (job *RequestJob) Run(ctx context.Context) error {
+func (job *ShortConnJob) Run(ctx context.Context) error {
 	if job.conn == nil {
 		return errors.New("conn is nil")
 	}

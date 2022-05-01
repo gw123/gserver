@@ -9,6 +9,7 @@ import (
 	"os"
 	"os/signal"
 	"sync"
+	"sync/atomic"
 	"syscall"
 	"time"
 )
@@ -17,20 +18,24 @@ type Server struct {
 	config     contracts.ServerConfig
 	pool       gworker.WorkerPool
 	conn       net.Conn
-	count      int
+	count      int64
 	totalCount int
 	countMutex sync.Mutex
 	isClose    bool
 	ctx        context.Context
+	cancel     context.CancelFunc
+	listener   net.Listener
 }
 
 func NewServer(config contracts.ServerConfig) *Server {
-	ctx := context.Background()
+	ctx, cancel := context.WithCancel(context.Background())
 	workerPool := gworker.NewWorkerPool(ctx, time.Second*2, 100)
+
 	return &Server{
 		config: config,
 		pool:   workerPool,
 		ctx:    ctx,
+		cancel: cancel,
 	}
 }
 
@@ -41,51 +46,25 @@ func (s *Server) server() {
 		glog.Errorf("%s", err.Error())
 		return
 	}
+	s.listener = listen
 	glog.Infof("server listen at %s", addr)
-	defer listen.Close()
-	go func() {
-		for {
-			conn, err := listen.Accept()
-			if err != nil {
-				if !s.isClose {
-					glog.Error(err.Error())
-				}
-				break
-			}
-			if s.isClose {
-				glog.Warn("连接在手动关闭信号后到来")
-				conn.Close()
-				break
-			}
 
-			s.countMutex.Lock()
-			s.count++
-			s.countMutex.Unlock()
-			job := NewRequestJob(conn, time.Second*2, s.ctx)
-			s.pool.Push(job)
-		}
-	}()
-
-	timer := time.NewTicker(time.Second * 5)
-	for {
-		if s.isClose {
-			time.Sleep(time.Second * 2)
+	for !s.isClose {
+		conn, err := listen.Accept()
+		if err != nil {
+			glog.WithErr(err).Errorf("accept tcp conn err")
 			break
 		}
-		select {
-		case <-timer.C:
-			glog.Infof("5s内一共收到%d个请求", s.count)
-			s.countMutex.Lock()
-			s.count = 0
-			s.countMutex.Unlock()
-			status := s.Status()
-			glog.Infof("freeNum : %d", status)
-		}
+
+		atomic.AddInt64(&s.count, 1)
+		job := NewLongConnJob(conn, time.Second*2)
+		s.pool.Push(job)
 	}
 }
 
 func (s *Server) Run() {
 	go s.handleSignal()
+	go s.Status()
 	s.pool.Run()
 	s.server()
 }
@@ -93,10 +72,24 @@ func (s *Server) Run() {
 func (s *Server) Stop() {
 	s.isClose = true
 	s.pool.Stop()
+	s.listener.Close()
 }
 
-func (s *Server) Status() uint {
-	return s.pool.Status()
+func (s *Server) Status() {
+	timer := time.NewTicker(time.Second * 10)
+	for {
+		if s.isClose {
+			time.Sleep(time.Second * 2)
+			break
+		}
+		select {
+		case <-timer.C:
+			atomic.StoreInt64(&s.count, 0)
+			status := s.pool.Status()
+			glog.Infof("freeNum : %d", status)
+		}
+	}
+	return
 }
 
 func (s *Server) GetConfig() contracts.ServerConfig {

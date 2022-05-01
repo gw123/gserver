@@ -42,7 +42,7 @@ replace gopkg.in/jcmturner/gokrb5.v7 => github.com/jcmturner/gokrb5 v7.2.4-0.201
 
 require (
 	github.com/gw123/glog v1.6.7
-	github.com/gw123/gworker v1.7.4
+	github.com/gw123/gworker v1.7.6
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/viper v1.4.0
 )
